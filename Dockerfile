@@ -66,9 +66,11 @@ RUN ldconfig
 
 
 RUN pip3 install networkx matplotlib mnist numpy pandas 
+RUN ls -als
 RUN git clone https://github.com/cengwins/ahc.git /usr/local/src/ahc
 WORKDIR /usr/local/src/ahc
 
 RUN apt install -y nano vim
+
 RUN /bin/bash
 #RUN python3 tests/PhysicalLayers/testUsrp.py 
