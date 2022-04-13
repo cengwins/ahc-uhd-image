@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - v1.2.x
 
 jobs:
   docker:
@@ -24,6 +25,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: cengwins/ahc-uhd-image
+          tags: cengwins/ahc-uhd-image:1.2
           cache-from: type=gha
           cache-to: type=gha,mode=max
