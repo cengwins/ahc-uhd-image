@@ -36,9 +36,9 @@ RUN pip3 install gevent pyudev mprpc pyroute2 numpy mako requests six pyqt5 pyqt
 #RUN git clone https://github.com/EttusResearch/uhd.git
 #WORKDIR /opt/uhd/host
 #RUN git checkout ${uhd_tag}
-ARG         MAKEWIDTH=4
+ARG         MAKEWIDTH=8
 ARG         UHD_TAG=v4.2.0.0
-#RUN          rm -rf /var/lib/apt/lists/*
+#RUN          rm -rf /var/lib/apt/lists/*       
 RUN          mkdir -p /usr/local/src
 RUN          git clone https://github.com/EttusResearch/uhd.git /usr/local/src/uhd
 WORKDIR     /usr/local/src/uhd/
@@ -52,7 +52,7 @@ RUN          make -j $MAKEWIDTH
 RUN          make install
 RUN          ldconfig
 RUN          uhd_images_downloader
-WORKDIR  /usr/lib/uhd/utils
+WORKDIR  /usr/local/lib/uhd/utils
 RUN cp uhd-usrp.rules /etc/udev/rules.d/
 #RUN udevadm control --reload-rules
 #RUN udevadm trigger
