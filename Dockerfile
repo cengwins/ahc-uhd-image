@@ -12,7 +12,7 @@ RUN apt install -y autoconf automake build-essential doxygen
 RUN apt install -y cmake 
 RUN apt install -y g++ 
 RUN apt install -y curl
-RUN apt install -y dpdk libdpdk-dev
+RUN apt install -y dpdk dpdk-dev libdpdk-dev
 RUN apt install -y python3-dev  python3-mako python3-numpy python3-requests python3-scipy python3-setuptools python3-ruamel.yaml python3-dev python3-docutils python3-gi python3-gi-cairo python3-gps python3-lxml python3-numpy-dbg python3-opengl python3-pyqt5 python3-setuptools python3-six python3-sphinx python3-yaml python3-zmq 
 RUN apt install -y swig pkg-config 
 RUN apt install -y libboost-all-dev
@@ -23,6 +23,7 @@ RUN apt install -y ccache cpufrequtils doxygen ethtool inetutils-tools
 RUN apt install -y ethtool fort77 g++ gir1.2-gtk-3.0  gobject-introspection gpsd gpsd-clients inetutils-tools libasound2-dev  libcomedi-dev libcppunit-dev libfftw3-bin libfftw3-dev libfftw3-doc libfontconfig1-dev libgmp-dev libgps-dev libgsl-dev liblog4cpp5-dev libncurses5 libncurses5-dev libpulse-dev libqt5opengl5-dev libqwt-qt5-dev libsdl1.2-dev libtool libudev-dev libusb-1.0-0 libusb-1.0-0-dev libusb-dev libxi-dev libxrender-dev libzmq3-dev libzmq5 ncurses-bin  swig wget
 RUN apt install -y python3-pip python3-cheetah python3-click python3-click-plugins python3-click-threading
 RUN pip3 install gevent pyudev mprpc pyroute2 numpy mako requests six pyqt5 pyqtgraph
+
 
 #RUN apt install -y software-properties-common
 #RUN add-apt-repository ppa:ettusresearch/uhd
@@ -35,18 +36,21 @@ RUN pip3 install gevent pyudev mprpc pyroute2 numpy mako requests six pyqt5 pyqt
 #RUN git clone https://github.com/EttusResearch/uhd.git
 #WORKDIR /opt/uhd/host
 #RUN git checkout ${uhd_tag}
-ARG         MAKEWIDTH=3
-ARG         UHD_TAG=v3.15.0.03
+ARG         MAKEWIDTH=4
+ARG         UHD_TAG=v4.2.0.0
 #RUN          rm -rf /var/lib/apt/lists/*
 RUN          mkdir -p /usr/local/src
 RUN          git clone https://github.com/EttusResearch/uhd.git /usr/local/src/uhd
-RUN          cd /usr/local/src/uhd/ 
-#RUN         git checkout $UHD_TAG
+WORKDIR     /usr/local/src/uhd/
+RUN          git tag -l 
+RUN          git checkout $UHD_TAG
+RUN          git submodule update
 RUN          mkdir -p /usr/local/src/uhd/host/build
 WORKDIR      /usr/local/src/uhd/host/build
-RUN          cmake .. -DENABLE_PYTHON3=ON -DUHD_RELEASE_MODE=release -DCMAKE_INSTALL_PREFIX=/usr
+RUN          cmake .. -DENABLE_DPDK=OFF -DENABLE_PYTHON3=ON -DENABLE_PYTHON_API=ON -DUHD_RELEASE_MODE=release -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN          make -j $MAKEWIDTH
 RUN          make install
+RUN          ldconfig
 RUN          uhd_images_downloader
 WORKDIR  /usr/lib/uhd/utils
 RUN cp uhd-usrp.rules /etc/udev/rules.d/
