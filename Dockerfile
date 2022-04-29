@@ -75,4 +75,4 @@ RUN apt install -y nano vim
 #WORKDIR /usr/local/src/ahc
 #RUN pip3 install git+https://github.com/cengwins/ahc
 RUN pip install adhoccomputing
-RUN export PYTHONPATH=/usr/local/lib/python3.8/site-packages:/usr/local/lib/python3.8/dist-packages
+ENV PYTHONPATH=/usr/local/lib/python3.8/site-packages:/usr/local/lib/python3.8/dist-packages
