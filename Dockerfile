@@ -31,7 +31,6 @@ RUN         cmake ..  -DENABLE_PYTHON_API=ON -DUHD_RELEASE_MODE=release -DCMAKE_
 WORKDIR     /usr/lib/uhd/utils
 RUN         cp uhd-usrp.rules /etc/udev/rules.d/
 ENV         UHD_IMAGES_DIR=/usr/share/uhd/images
-
 WORKDIR     /usr/local/src/
 RUN         git clone https://github.com/cengwins/liquid-dsp.git /usr/local/src/liquid-dsp
 #RUN         cd /usr/local/src/liquid-dsp
