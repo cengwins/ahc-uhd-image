@@ -31,15 +31,35 @@ RUN         cmake ..  -DENABLE_PYTHON_API=ON -DUHD_RELEASE_MODE=release -DCMAKE_
 WORKDIR     /usr/lib/uhd/utils
 RUN         cp uhd-usrp.rules /etc/udev/rules.d/
 ENV         UHD_IMAGES_DIR=/usr/share/uhd/images
-WORKDIR     /usr/local/src/
+
+WORKDIR     /usr/local/src
 RUN         git clone https://github.com/cengwins/liquid-dsp.git /usr/local/src/liquid-dsp
 #RUN         cd /usr/local/src/liquid-dsp
 WORKDIR     /usr/local/src/liquid-dsp
-RUN         ./bootstrap.sh \
+RUN         ./bootstrap.sh  \
             && ./configure \
             && make -j $MAKEWIDTH \
             && make install \
             && ldconfig
+
+WORKDIR     /usr/local/src/
+RUN	   apt install -y python3-six python3-six python-six python3-mako python3-lxml python3-lxml python3-numpy python3-numpy python3-pip git python3-pybind11 libsndfile1-dev libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla-dev pkg-config git wget
+RUN	    git clone https://github.com/Nuand/bladeRF.git /usr/local/src/bladeRF
+WORKDIR	    /usr/local/src/bladeRF/host
+RUN         mkdir build
+WORKDIR    /usr/local/src/bladeRF/host/build
+RUN        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DINSTALL_UDEV_RULES=ON .. \
+           && groupadd bladerf \
+           && usermod -a -G bladerf root \
+           && make && make install && ldconfig 
+WORKDIR    /usr/local/src/bladeRF/host/libraries/libbladeRF_bindings/python
+RUN	   pip install .
+WORKDIR    /etc
+RUN	   mkdir Nuand && cd Nuand && mkdir bladeRF && cd bladeRF && wget https://www.nuand.com/fpga/v0.11.1/hostedx115.rbf 
+WORKDIR    /usr/local/src
+RUN 	   git clone https://github.com/cengwins/bladerfconfig.git \
+	   && cp bladerfconfig/*.tbl /etc/Nuand/bladeRF
+
 
 WORKDIR     /usr/local/src/
 RUN         git clone https://github.com/cengwins/ahc_v2_tests.git /usr/local/src/ahc_v2_tests
